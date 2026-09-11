@@ -1,0 +1,42 @@
+{
+  "target_roles": [
+    "MERN Stack Developer",
+    "Full Stack Developer",
+    "Junior AI Engineer",
+    "Internship"
+  ],
+  "locations": [
+    "Pakistan",
+    "Islamabad",
+    "Rawalpindi",
+    "Lahore",
+    "Karachi",
+    "Peshawar"
+  ],
+  "work_modes": [
+    "On-site",
+    "Remote",
+    "Hybrid"
+  ],
+  "experience_levels": [
+    "Internship",
+    "Fresh Graduate",
+    "Junior"
+  ],
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "Python",
+    "Flask",
+    "AI",
+    "LLM"
+  ],
+  "minimum_salary": 50000,
+  "currency": "PKR",
+  "exclude_unpaid": true,
+  "search_frequency_hours": 6,
+  "minimum_match_score": 75
+}

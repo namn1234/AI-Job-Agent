@@ -1,0 +1,61 @@
+{
+  "name": "Ismail Khan",
+  "title": "Software Engineer",
+  "email": "",
+  "phone": "",
+  "linkedin": "",
+  "github": "",
+  "portfolio": "",
+
+  "summary": "Software Engineering graduate with experience building full-stack MERN applications and Python-based AI projects.",
+
+  "skills": [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "Express",
+    "MongoDB",
+    "Python",
+    "Flask",
+    "FastAPI",
+    "REST APIs",
+    "Git",
+    "AI",
+    "LLM"
+  ],
+
+  "education": [
+    {
+      "degree": "BS Software Engineering",
+      "university": "Hazara University"
+    }
+  ],
+
+  "projects": [
+    {
+      "name": "MERN Job Portal",
+      "technologies": [
+        "React",
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "JWT"
+      ],
+      "description": "Built and deployed a full-stack job portal with authentication and role-based access."
+    },
+    {
+      "name": "AI Job Agent",
+      "technologies": [
+        "Python",
+        "FastAPI",
+        "Gemini",
+        "MongoDB"
+      ],
+      "description": "AI-powered job search and matching system with configurable preferences and job recommendations."
+    }
+  ],
+
+  "certifications": [
+    "IBM AI Developer Professional Certificate"
+  ]
+}
