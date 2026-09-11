@@ -45,7 +45,7 @@ function Dashboard() {
   const fetchJobs = async () => {
     try {
       const response = await fetch(
-        "http://127.0.0.1:8000/saved-jobs"
+        `${API_BASE_URL}/saved-jobs`
       );
 
       const data = await response.json();
@@ -87,7 +87,7 @@ function Dashboard() {
       setSearching(true);
 
       const response = await fetch(
-        "http://127.0.0.1:8000/jobs"
+        `${API_BASE_URL}/jobs`
       );
 
       const data = await response.json();

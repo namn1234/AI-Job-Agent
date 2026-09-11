@@ -2,7 +2,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
+import API_BASE_URL from "../api";
 import {
   useLocation,
   useNavigate,
@@ -52,7 +52,7 @@ function JobDetails() {
 
         const response =
           await fetch(
-            `http://127.0.0.1:8000/job-details?url=${encodeURIComponent(
+           `${API_BASE_URL}/job-details?url=${encodeURIComponent(
               jobUrl
             )}`
           );
@@ -121,7 +121,7 @@ function JobDetails() {
 
         const response =
           await fetch(
-            `http://127.0.0.1:8000/jobs/generate-resume?url=${encodeURIComponent(
+            `${API_BASE_URL}/jobs/generate-resume?url=${encodeURIComponent(
               job.url
             )}`,
             {
@@ -191,7 +191,7 @@ function JobDetails() {
 
         const response =
           await fetch(
-            `http://127.0.0.1:8000/jobs/mark-applied?url=${encodeURIComponent(
+           `${API_BASE_URL}/jobs/mark-applied?url=${encodeURIComponent(
               job.url
             )}`,
             {
@@ -247,7 +247,7 @@ function JobDetails() {
 
         const response =
           await fetch(
-            `http://127.0.0.1:8000/jobs/reject?url=${encodeURIComponent(
+           `${API_BASE_URL}/jobs/reject?url=${encodeURIComponent(
               job.url
             )}`,
             {

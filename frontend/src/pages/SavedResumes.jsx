@@ -1,172 +1,321 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
+import API_BASE_URL from "../api";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 
 function SavedResumes() {
   const navigate = useNavigate();
 
-  const [resumes, setResumes] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [resumes, setResumes] =
+    useState([]);
 
+  const [loading, setLoading] =
+    useState(true);
+
+  const [error, setError] =
+    useState("");
+
+
+  // ---------------------------------------------
+  // Load saved resumes
+  // ---------------------------------------------
 
   useEffect(() => {
+
     const fetchResumes = async () => {
+
       try {
+
         const response = await fetch(
-          "http://127.0.0.1:8000/resumes/all"
+        `${API_BASE_URL}/resumes/all`
         );
 
-        const data = await response.json();
+        const data =
+          await response.json();
+
 
         if (!response.ok) {
+
           throw new Error(
             data.detail ||
             "Failed to load resumes"
           );
         }
 
+
         setResumes(
           data.resumes || []
         );
 
+
       } catch (error) {
+
         console.error(
           "Resume loading failed:",
           error
         );
 
+        setError(
+          error.message
+        );
+
+
       } finally {
+
         setLoading(false);
       }
     };
 
+
     fetchResumes();
+
   }, []);
 
 
+  // ---------------------------------------------
+  // Open resume
+  // ---------------------------------------------
+
+  const openResume = (item) => {
+
+    navigate(
+      "/resume-preview",
+      {
+        state: {
+          resume:
+            item.resume,
+
+          jobUrl:
+            item.job_url,
+
+          jobTitle:
+            item.resume
+              ?.target_job_title,
+        },
+      }
+    );
+  };
+
+
+  // ---------------------------------------------
+  // UI
+  // ---------------------------------------------
+
   return (
-    <div
-      style={{
-        maxWidth: "1000px",
-        margin: "0 auto",
-        padding: "40px",
-      }}
-    >
 
-      <button
-        onClick={() =>
-          navigate("/")
-        }
-      >
-        ← Dashboard
-      </button>
+    <div className="page-container">
 
 
-      <h1>
-        Saved Resumes
-      </h1>
+      <div className="page-header">
+
+        <button
+          className="secondary-button"
+          onClick={() =>
+            navigate("/")
+          }
+        >
+          ← Dashboard
+        </button>
+
+
+        <h1 className="page-title">
+          Saved Resumes
+        </h1>
+
+
+        <p className="page-subtitle">
+          Review and download your tailored resumes.
+        </p>
+
+      </div>
 
 
       {loading ? (
 
-        <p>
-          Loading resumes...
-        </p>
+        <div className="details-card">
+
+          <p>
+            Loading resumes...
+          </p>
+
+        </div>
+
+      ) : error ? (
+
+        <div className="details-card">
+
+          <p className="status-rejected">
+            {error}
+          </p>
+
+        </div>
 
       ) : resumes.length === 0 ? (
 
-        <p>
-          No saved resumes yet.
-        </p>
+        <div className="details-card">
+
+          <h3>
+            No saved resumes yet
+          </h3>
+
+          <p>
+            Generate and save a tailored resume
+            from a job details page.
+          </p>
+
+        </div>
 
       ) : (
 
-        <div
-          style={{
-            display: "grid",
-            gap: "20px",
-          }}
-        >
+        <div className="saved-resume-grid">
 
           {resumes.map(
-            (item, index) => (
+            (item, index) => {
 
-              <div
-                key={index}
-                style={{
-                  border:
-                    "1px solid #ddd",
-                  borderRadius:
-                    "10px",
-                  padding: "20px",
-                }}
-              >
+              const resume =
+                item.resume || {};
 
-                <h3>
-                  {
-                    item.resume
-                      ?.target_job_title ||
-                    "Tailored Resume"
+
+              return (
+
+                <div
+                  key={
+                    item.job_url ||
+                    index
                   }
-                </h3>
-
-
-                <p>
-                  <strong>
-                    Job URL:
-                  </strong>{" "}
-
-                  {item.job_url}
-                </p>
-
-
-                <p>
-                  <strong>
-                    Summary:
-                  </strong>{" "}
-
-                  {
-                    item.resume
-                      ?.professional_summary ||
-                    "No summary"
-                  }
-                </p>
-
-
-                <p>
-                  <strong>
-                    Skills:
-                  </strong>{" "}
-
-                  {(
-                    item.resume
-                      ?.skills ||
-                    []
-                  ).join(", ")}
-                </p>
-
-
-                <button
-                  onClick={() =>
-                    navigate(
-                      "/resume-preview",
-                      {
-                        state: {
-                          resume:
-                            item.resume,
-
-                          jobUrl:
-                            item.job_url,
-                        },
-                      }
-                    )
-                  }
+                  className="saved-resume-card"
                 >
-                  Open Resume
-                </button>
 
-              </div>
-            )
+                  <div className="saved-resume-header">
+
+                    <div>
+
+                      <h3>
+                        {
+                          resume
+                            .target_job_title ||
+                          "Tailored Resume"
+                        }
+                      </h3>
+
+                      <p>
+                        Saved Resume
+                      </p>
+
+                    </div>
+
+
+                    <span className="resume-badge">
+                      CV
+                    </span>
+
+                  </div>
+
+
+                  <div className="saved-resume-section">
+
+                    <div className="details-label">
+                      Professional Summary
+                    </div>
+
+                    <p>
+                      {
+                        resume
+                          .professional_summary ||
+                        "No summary available."
+                      }
+                    </p>
+
+                  </div>
+
+
+                  <div className="saved-resume-section">
+
+                    <div className="details-label">
+                      Skills
+                    </div>
+
+                    <div className="skill-tags">
+
+                      {(
+                        resume.skills ||
+                        []
+                      )
+                        .slice(0, 8)
+                        .map(
+                          (
+                            skill,
+                            skillIndex
+                          ) => (
+
+                            <span
+                              key={
+                                skillIndex
+                              }
+                              className="skill-tag"
+                            >
+                              {skill}
+                            </span>
+
+                          )
+                        )}
+
+                    </div>
+
+                  </div>
+
+
+                  <div className="saved-resume-actions">
+
+                    <button
+                      className="primary-button"
+                      onClick={() =>
+                        openResume(item)
+                      }
+                    >
+                      Open Resume
+                    </button>
+
+
+                    <button
+                      className="secondary-button"
+                      onClick={() =>
+                        window.open(
+                         `${API_BASE_URL}/resumes/download/pdf?job_url=${encodeURIComponent(
+                            item.job_url
+                          )}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      PDF
+                    </button>
+
+
+                    <button
+                      className="secondary-button"
+                      onClick={() =>
+                        window.open(
+                          `${API_BASE_URL}/resumes/download/docx?job_url=${encodeURIComponent(
+                            item.job_url
+                          )}`,
+                          "_blank"
+                        )
+                      }
+                    >
+                      DOCX
+                    </button>
+
+                  </div>
+
+                </div>
+              );
+            }
           )}
 
         </div>

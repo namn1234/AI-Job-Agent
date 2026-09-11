@@ -2,7 +2,7 @@ import {
   useEffect,
   useState,
 } from "react";
-
+import API_BASE_URL from "../api";
 import {
   useNavigate,
 } from "react-router-dom";
@@ -32,7 +32,7 @@ function NotificationBell() {
 
         const response =
           await fetch(
-            "http://127.0.0.1:8000/notifications"
+           `${API_BASE_URL}/notifications`
           );
 
         if (!response.ok) {
@@ -89,7 +89,7 @@ function NotificationBell() {
 
         const response =
           await fetch(
-            `http://127.0.0.1:8000/notifications/${notificationId}/read`,
+           `${API_BASE_URL}/notifications/${notificationId}/read`,
             {
               method: "PUT",
             }
@@ -143,7 +143,7 @@ function NotificationBell() {
 
         const response =
           await fetch(
-            "http://127.0.0.1:8000/notifications/read-all",
+           `${API_BASE_URL}/notifications/read-all`,
             {
               method: "PUT",
             }

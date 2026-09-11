@@ -1,7 +1,7 @@
 import {
   useState,
 } from "react";
-
+import API_BASE_URL from "../api";
 import {
   useLocation,
   useNavigate,
@@ -10,12 +10,8 @@ import {
 
 function ResumePreview() {
 
-  const location =
-    useLocation();
-
-  const navigate =
-    useNavigate();
-
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const initialResume =
     location.state?.resume;
@@ -47,24 +43,24 @@ function ResumePreview() {
   if (!resume) {
 
     return (
+      <div className="page-container">
 
-      <div
-        style={{
-          padding: "40px",
-        }}
-      >
+        <div className="resume-document">
 
-        <h2>
-          No resume data found
-        </h2>
+          <h2>
+            No resume data found
+          </h2>
 
-        <button
-          onClick={() =>
-            navigate("/")
-          }
-        >
-          Back to Dashboard
-        </button>
+          <button
+            className="secondary-button"
+            onClick={() =>
+              navigate("/")
+            }
+          >
+            Back to Dashboard
+          </button>
+
+        </div>
 
       </div>
     );
@@ -101,10 +97,8 @@ function ResumePreview() {
         ...(resume.skills || [])
       ];
 
-
       updatedSkills[index] =
         value;
-
 
       setResume({
         ...resume,
@@ -125,11 +119,9 @@ function ResumePreview() {
       value
     ) => {
 
-      const updatedProjects =
-        [
-          ...(resume.projects ||
-            [])
-        ];
+      const updatedProjects = [
+        ...(resume.projects || [])
+      ];
 
 
       const updatedProject = {
@@ -196,7 +188,7 @@ function ResumePreview() {
 
         const response =
           await fetch(
-            "http://127.0.0.1:8000/resumes/save",
+            `${API_BASE_URL}/resumes/save`,
             {
               method: "POST",
 
@@ -256,376 +248,469 @@ function ResumePreview() {
 
 
   // --------------------------------------------------
+  // Download PDF
+  // --------------------------------------------------
+
+  const downloadPDF = () => {
+
+    if (!jobUrl) {
+      alert(
+        "Please save the resume first."
+      );
+      return;
+    }
+
+    window.open(
+     `${API_BASE_URL}/resumes/download/pdf?job_url=${encodeURIComponent(
+        jobUrl
+      )}`,
+      "_blank"
+    );
+  };
+
+
+  // --------------------------------------------------
+  // Download DOCX
+  // --------------------------------------------------
+
+  const downloadDOCX = () => {
+
+    if (!jobUrl) {
+      alert(
+        "Please save the resume first."
+      );
+      return;
+    }
+
+    window.open(
+     `${API_BASE_URL}/resumes/download/docx?job_url=${encodeURIComponent(
+        jobUrl
+      )}`,
+      "_blank"
+    );
+  };
+
+
+  // --------------------------------------------------
   // Page
   // --------------------------------------------------
 
   return (
 
-    <div
-      style={{
-        maxWidth: "900px",
-        margin: "0 auto",
-        padding: "40px",
-      }}
-    >
-
-      <button
-        onClick={() =>
-          navigate(-1)
-        }
-      >
-        ← Back
-      </button>
+    <div className="resume-page">
 
 
-      <h1>
-        Tailored Resume
-      </h1>
+      {/* Top controls */}
+
+      <div className="resume-topbar">
+
+        <button
+          className="secondary-button"
+          onClick={() =>
+            navigate(-1)
+          }
+        >
+          ← Back
+        </button>
 
 
-      {jobTitle && (
+        <div className="resume-top-actions">
 
-        <p>
-          <strong>
-            Target Job:
-          </strong>{" "}
-
-          {jobTitle}
-        </p>
-      )}
-
-
-      {company && (
-
-        <p>
-          <strong>
-            Company:
-          </strong>{" "}
-
-          {company}
-        </p>
-      )}
-
-
-      <hr />
-
-
-      <h2>
-        {
-          resume.target_job_title
-        }
-      </h2>
-
-
-      {/* Summary */}
-
-      <h3>
-        Professional Summary
-      </h3>
-
-
-      <textarea
-        value={
-          resume
-            .professional_summary ||
-          ""
-        }
-        onChange={
-          updateSummary
-        }
-        rows={6}
-        style={{
-          width: "100%",
-          padding: "10px",
-          fontSize: "16px",
-        }}
-      />
-
-
-      {/* Skills */}
-
-      <h3>
-        Skills
-      </h3>
-
-
-      {(resume.skills || []).map(
-        (
-          skill,
-          index
-        ) => (
-
-          <div
-            key={index}
-            style={{
-              marginBottom:
-                "8px",
-            }}
+          <button
+            className="primary-button"
+            onClick={
+              saveResume
+            }
+            disabled={
+              saving
+            }
           >
-
-            <input
-              type="text"
-              value={skill}
-              onChange={(
-                event
-              ) =>
-                updateSkill(
-                  index,
-                  event.target
-                    .value
-                )
-              }
-              style={{
-                width: "100%",
-                padding: "8px",
-              }}
-            />
-
-          </div>
-        )
-      )}
+            {saving
+              ? "Saving..."
+              : "Save Resume"}
+          </button>
 
 
-      {/* Projects */}
-
-      <h3>
-        Projects
-      </h3>
-
-
-      {(resume.projects || []).map(
-        (
-          project,
-          projectIndex
-        ) => (
-
-          <div
-            key={projectIndex}
-            style={{
-              padding: "15px",
-              border:
-                "1px solid #ddd",
-              marginBottom:
-                "20px",
-            }}
+          <button
+            className="secondary-button"
+            onClick={
+              downloadPDF
+            }
           >
-
-            <h4>
-              {project.name}
-            </h4>
+            Download PDF
+          </button>
 
 
-            <p>
+          <button
+            className="secondary-button"
+            onClick={
+              downloadDOCX
+            }
+          >
+            Download DOCX
+          </button>
 
-              <strong>
-                Technologies:
-              </strong>{" "}
+        </div>
 
-              {(
-                project
-                  .technologies ||
-                []
-              ).join(", ")}
-
-            </p>
+      </div>
 
 
-            {(
-              project
-                .bullet_points ||
-              []
-            ).map(
+      {/* Target information */}
+
+      <div className="resume-target">
+
+        <h1>
+          Tailored Resume
+        </h1>
+
+        {jobTitle && (
+
+          <p>
+            <strong>
+              Target Job:
+            </strong>{" "}
+
+            {jobTitle}
+          </p>
+        )}
+
+
+        {company && (
+
+          <p>
+            <strong>
+              Company:
+            </strong>{" "}
+
+            {company}
+          </p>
+        )}
+
+      </div>
+
+
+      {/* Resume */}
+
+      <div className="resume-document">
+
+
+        {/* Resume header */}
+
+        <div className="resume-header">
+
+          <h1>
+            {resume.name ||
+              "Ismail Khan"}
+          </h1>
+
+          <p>
+            {resume.target_job_title ||
+              jobTitle ||
+              "Software Engineer"}
+          </p>
+
+        </div>
+
+
+        {/* Professional Summary */}
+
+        <section className="resume-section">
+
+          <h2>
+            Professional Summary
+          </h2>
+
+          <textarea
+            className="resume-textarea resume-summary"
+            value={
+              resume
+                .professional_summary ||
+              ""
+            }
+            onChange={
+              updateSummary
+            }
+            rows={6}
+          />
+
+        </section>
+
+
+        {/* Skills */}
+
+        <section className="resume-section">
+
+          <h2>
+            Skills
+          </h2>
+
+          <div className="resume-skills">
+
+            {(resume.skills || []).map(
               (
-                point,
-                bulletIndex
+                skill,
+                index
               ) => (
 
-                <textarea
-                  key={
-                    bulletIndex
+                <input
+                  key={index}
+                  className="resume-skill-input"
+                  type="text"
+                  value={
+                    skill
                   }
-                  value={point}
                   onChange={(
                     event
                   ) =>
-                    updateProjectBullet(
-                      projectIndex,
-                      bulletIndex,
-                      event
-                        .target
-                        .value
+                    updateSkill(
+                      index,
+                      event.target.value
                     )
                   }
-                  rows={3}
-                  style={{
-                    width:
-                      "100%",
-                    padding:
-                      "8px",
-                    marginBottom:
-                      "8px",
-                  }}
                 />
+
               )
             )}
 
           </div>
-        )
-      )}
+
+        </section>
 
 
-      {/* Education */}
+        {/* Projects */}
 
-      <h3>
-        Education
-      </h3>
+        <section className="resume-section">
 
-
-      <ul>
-
-        {(
-          resume.education || []
-        ).map(
-          (
-            education,
-            index
-          ) => (
-
-            <li key={index}>
-
-              {typeof education ===
-              "string"
-                ? education
-                : `${
-                    education.degree ||
-                    ""
-                  }${
-                    education
-                      .university
-                      ? ` - ${education.university}`
-                      : ""
-                  }`}
-
-            </li>
-          )
-        )}
-
-      </ul>
+          <h2>
+            Projects
+          </h2>
 
 
-      {/* Certifications */}
+          {(resume.projects || []).map(
+            (
+              project,
+              projectIndex
+            ) => (
 
-      <h3>
-        Certifications
-      </h3>
+              <div
+                className="resume-project"
+                key={
+                  projectIndex
+                }
+              >
 
-
-      <ul>
-
-        {(
-          resume
-            .certifications ||
-          []
-        ).map(
-          (
-            certification,
-            index
-          ) => (
-
-            <li key={index}>
-              {
-                certification
-              }
-            </li>
-          )
-        )}
-
-      </ul>
+                <h3>
+                  {project.name}
+                </h3>
 
 
-      {/* ATS */}
+                <p className="resume-technologies">
 
-      <h3>
-        ATS Keywords
-      </h3>
+                  <strong>
+                    Technologies:
+                  </strong>{" "}
 
+                  {(
+                    project
+                      .technologies ||
+                    []
+                  ).join(", ")}
 
-      <p>
-
-        {(
-          resume
-            .ats_keywords ||
-          []
-        ).join(", ")}
-
-      </p>
+                </p>
 
 
-      <hr />
+                {(
+                  project
+                    .bullet_points ||
+                  []
+                ).map(
+                  (
+                    point,
+                    bulletIndex
+                  ) => (
+
+                    <textarea
+                      key={
+                        bulletIndex
+                      }
+                      className="resume-textarea resume-bullet"
+                      value={
+                        point
+                      }
+                      onChange={(
+                        event
+                      ) =>
+                        updateProjectBullet(
+                          projectIndex,
+                          bulletIndex,
+                          event.target.value
+                        )
+                      }
+                      rows={3}
+                    />
+
+                  )
+                )}
+
+              </div>
+
+            )
+          )}
+
+        </section>
 
 
-      <div
-        style={{
-          display: "flex",
-          gap: "10px",
-          flexWrap: "wrap",
-          marginTop: "25px",
-        }}
-      >
+        {/* Education */}
+
+        <section className="resume-section">
+
+          <h2>
+            Education
+          </h2>
+
+          <ul>
+
+            {(
+              resume.education ||
+              []
+            ).map(
+              (
+                education,
+                index
+              ) => (
+
+                <li key={index}>
+
+                  {typeof education ===
+                  "string"
+
+                    ? education
+
+                    : `${
+                        education.degree ||
+                        ""
+                      }${
+                        education
+                          .university
+                          ? ` - ${education.university}`
+                          : ""
+                      }`
+                  }
+
+                </li>
+
+              )
+            )}
+
+          </ul>
+
+        </section>
+
+
+        {/* Certifications */}
+
+        <section className="resume-section">
+
+          <h2>
+            Certifications
+          </h2>
+
+          <ul>
+
+            {(
+              resume
+                .certifications ||
+              []
+            ).map(
+              (
+                certification,
+                index
+              ) => (
+
+                <li key={index}>
+                  {
+                    certification
+                  }
+                </li>
+
+              )
+            )}
+
+          </ul>
+
+        </section>
+
+
+        {/* ATS Keywords */}
+
+        <section className="resume-section">
+
+          <h2>
+            ATS Keywords
+          </h2>
+
+          <p className="ats-keywords">
+
+            {(
+              resume
+                .ats_keywords ||
+              []
+            ).join(", ")}
+
+          </p>
+
+        </section>
+
+
+      </div>
+
+
+      {/* Bottom actions */}
+
+      <div className="resume-bottom-actions">
 
         <button
+          className="primary-button"
           onClick={
             saveResume
           }
-          disabled={saving}
+          disabled={
+            saving
+          }
         >
-
           {saving
             ? "Saving..."
             : "Save Resume"}
-
         </button>
 
 
-       <button
-  onClick={() => {
-    window.open(
-      `http://127.0.0.1:8000/resumes/download/pdf?job_url=${encodeURIComponent(
-        jobUrl
-      )}`,
-      "_blank"
-    );
-  }}
->
-  Download PDF
-</button>
+        <button
+          className="secondary-button"
+          onClick={
+            downloadPDF
+          }
+        >
+          Download PDF
+        </button>
 
-<button
-  onClick={() => {
-    window.open(
-      `http://127.0.0.1:8000/resumes/download/docx?job_url=${encodeURIComponent(
-        jobUrl
-      )}`,
-      "_blank"
-    );
-  }}
->
-  Download DOCX
-</button>
+
+        <button
+          className="secondary-button"
+          onClick={
+            downloadDOCX
+          }
+        >
+          Download DOCX
+        </button>
 
       </div>
 
 
       {saveMessage && (
 
-        <p
-          style={{
-            marginTop: "15px",
-            fontWeight: "bold",
-          }}
-        >
+        <div className="resume-save-message">
           {saveMessage}
-        </p>
+        </div>
       )}
 
     </div>
