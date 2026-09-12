@@ -4,6 +4,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
 from backend.services.job_search import search_jobs
 from backend.services.resume_generator import generate_tailored_resume
@@ -47,7 +48,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
-        "https://ai-job-agent-yy0m.onrender.com",
+        "https://ai-job-agent-lake.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
